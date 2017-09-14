@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>iOS style sliding menu</title>
+  
+  
+  
+      <link rel="stylesheet" href="css/style.css">
+
+  
+</head>
+
+<body>
+  <!-- Navigation -->
+<nav id="slide-menu">
+	<ul>
+		<li class="timeline" onclick="javaScript:document.location.href ='novo.html';">Novo Trajeto</li>
+		<li class="events">Meus Trajetos</li>
+		<li class="calendar">Configurações</li>
+		<li class="events">Controle Infantil</li>
+		<li class="logout">Logout</li>
+	</ul>
+</nav>
+<!-- Content panel -->
+<div id="content">
+	<div class="menu-trigger"></div>
+
+
+
+
+
+<head>
+<meta charset="UTF-8">
+<title>Gerar Rotas</title>
+<link rel="stylesheet" href="https://developers.google.com/maps/documentation/javascript/demos/demos.css">
+
+<script>
+</script>
+</head>
+<body>
+<div style="margin-left:50px;position:relative">
+<ul class="abas">
+<!-- Aba: Novo Trajeto -->
+<li class="aba" id="abaNovoTrajeto">
+<section class="conteudo">
+<!-- Aparecerá quando a opção "Novo trajeto" estiver selecionada -->
+<form action="geraRotas.php" method="post">
+Origem: 
+<input type="text" placeholder="Endereço de origem" size=25 id='origem' value='-19.896377, -43.966375'> 
+<label> Destino: </label>
+<input type="text" placeholder="Endereço de destino" size=25 id='destino' value='-19.890787, -43.967010'> 
+
+<input type="image" src="images/search.png" onclick='loadRoute();return false;'>
+
+<input type="image" src="images/search.png" onclick='fazCaminho();return false;'>
+
+</form>
+</section></li>
+</ul>
+</div>
+
+
+<br/>
+
+
+
+ <div id="map" style="height:81%"></div>
+     <script>
+        
+
+var map;
+var directionsDisplay;
+var directionsService ;
+
+ var panorama;
+ var caminho = [];
+ var indiceCaminho;
+        var iconBase = './images/';
+        var icons = {
+            roadtype_gravel: {
+              icon: iconBase+'roadtype_gravel.png'
+            },
+            powerlinepole: {
+              icon: iconBase+'powerlinepole.png'
+            },
+            construction: {
+              icon: iconBase+'construction.png'
+            },
+            stairs:{
+                  icon: iconBase+'stairs.png'
+            },
+            riparianhabitat:{
+               icon: iconBase+'riparianhabitat.png'
+            },
+            accesdenied:{
+               icon: iconBase+'accesdenied.png'
+            }
+        };
+
+        function loadRoute()
+        {
+            directionsDisplay.setDirections({routes: []});
+             directionsDisplay.setMap(null);
+            iniciaRota(document.getElementById('origem').value, document.getElementById('destino').value);
+        }
+
+
+        function iniciaRota(origem, destino)
+        {
+            
+            var requestdTres = {
+                destination: destino,
+                origin: origem,
+                travelMode: 'WALKING',
+                provideRouteAlternatives: true,
+                
+                /*
+                travelMode: 'TRANSIT',
+                provideRouteAlternatives: false,
+                 */
+                
+            };
+            
+            directionsService.route(requestdTres, function(response, status) {
+              if (status == 'OK') {
+                  
+                  
+                  
+                  /*
+                for (var i = 0, len = response.routes.length; i < len; i++) {
+                   response.routes[i].legs[0].steps.forEach(logLegs);
+                }
+            */
+           
+           
+           
+
+
+	            for (var i = 0, len = response.routes.length; i < len; i++) {
+	                
+	                if( i == 0){
+	                    color = "#ff1e00";
+                            //caminho = [];
+                            indiceCaminho = 0;
+                            response.routes[i].overview_path.forEach(fazRota);
+                            alert(caminho);
+                            
+	                } else if( i == 1){
+			    var color = "#0b700b";	
+
+
+			      /*   var marker = new google.maps.Marker({
+			            position: new google.maps.LatLng(response.routes[1].overview_path[2].lat(), response.routes[1].overview_path[2].lng()),
+			            icon: icons['banana'].icon,
+			            map: map
+			          });
+                                  */
+
+                    
+	                } else {
+	                    color = "#ffa400";
+	                }
+	                
+	                new google.maps.DirectionsRenderer({
+	                    map: map,
+	                    draggable: true,
+	                    directions: response,
+	                    routeIndex: i,
+	                    polylineOptions: { strokeColor: color }
+	                });
+	            }	           
+           
+                
+                
+                
+                
+                
+              }
+            }); 
+        
+        
+        var features = [
+                  {
+                    position: new google.maps.LatLng(-19.893527, -43.965040),
+                    type: 'construction'
+                  }, {
+                    position: new google.maps.LatLng(-19.893691, -43.965194),
+                    type: 'construction'
+                  },
+                    {
+                    position: new google.maps.LatLng(-19.893644, -43.965242),
+                    type: 'riparianhabitat'
+                  }, {
+                    position: new google.maps.LatLng(-19.894053, -43.965607),
+                    type: 'riparianhabitat'
+                  }, {
+                    position: new google.maps.LatLng(-19.894492, -43.965913),
+                    type: 'riparianhabitat'
+                  }, {
+                    position: new google.maps.LatLng(-19.894475, -43.965811),
+                    type: 'powerlinepole'
+                  }, {
+                    position: new google.maps.LatLng(-19.894152, -43.965575),
+                    type: 'powerlinepole'
+                  }, {
+                    position: new google.maps.LatLng(-19.893880, -43.965350),
+                    type: 'powerlinepole'
+                  },{
+                    position: new google.maps.LatLng(-19.895518, -43.966306),
+                    type: 'powerlinepole'
+                  },{
+                    position: new google.maps.LatLng(-19.895228, -43.966293),
+                    type: 'powerlinepole'
+                  },{
+                    position: new google.maps.LatLng(-19.895009, -43.966208),
+                    type: 'powerlinepole'
+                  },{
+                    position: new google.maps.LatLng(-19.895304, -43.966374),
+                    type: 'roadtype_gravel'
+                  },{
+                    position: new google.maps.LatLng(-19.895082, -43.966321),
+                    type: 'roadtype_gravel'
+                  },{
+                    position: new google.maps.LatLng(-19.894863, -43.966197),
+                    type: 'roadtype_gravel'
+                  },{
+                    position: new google.maps.LatLng(-19.894209, -43.965704),
+                    type: 'roadtype_gravel'
+                  },{
+                    position: new google.maps.LatLng(-19.895582, -43.966396),
+                    type: 'accesdenied'
+                  },
+                  
+
+                ];
+
+                // Create markers.
+                features.forEach(function(feature) {
+                  var marker = new google.maps.Marker({
+                    position: feature.position,
+                    icon: icons[feature.type].icon,
+                    map: map
+                  });
+                });	        
+        
+        }
+
+
+
+
+function fazRota(element, index, array) {
+    //console.log("a[" + index + "] = " + element);
+    var temp = new String(element);
+    temp = temp.replace("(","");
+    temp = temp.replace(")","");
+    var arr = temp.split(",");
+    var ps = index*100;
+    
+    console.log(ps+', '+arr[1]+', '+arr[0]+', 300,');
+    caminho.push( {lat: Number(arr[0]), lng: Number(arr[1])});
+      
+}        
+
+
+
+
+function fazCaminho()
+{
+    panorama.setVisible(true);
+    panorama.setPosition(caminho[indiceCaminho]);
+    indiceCaminho++;
+}
+
+
+function logLegs(element, index, array) {
+
+    
+	//console.log(element.end_location.lat()+','+element.end_location.lng());
+
+	
+	if(element.travel_mode == "WALKING"){
+
+
+
+
+
+
+	        var request = {
+	            destination: element.end_location.lat()+','+element.end_location.lng(),
+	            origin: element.start_location.lat()+','+element.start_location.lng(),
+	            travelMode: 'WALKING',
+	            provideRouteAlternatives: true,
+	        };
+
+	       directionsService.route(request, function(response, status) {
+	          if (status == 'OK') {
+
+	            for (var i = 0, len = response.routes.length; i < len; i++) {
+	                
+	                if( i == 0){
+	                    color = "#ff1e00";
+                            //caminho = [];
+                            indiceCaminho = 0;
+                            response.routes[i].overview_path.forEach(fazRota);
+                            alert(caminho);
+                            
+	                } else if( i == 1){
+			    var color = "#0b700b";	
+
+
+			      /*   var marker = new google.maps.Marker({
+			            position: new google.maps.LatLng(response.routes[1].overview_path[2].lat(), response.routes[1].overview_path[2].lng()),
+			            icon: icons['banana'].icon,
+			            map: map
+			          });
+                                  */
+
+                    
+	                } else {
+	                    color = "#ffa400";
+	                }
+	                
+	                new google.maps.DirectionsRenderer({
+	                    map: map,
+	                    draggable: true,
+	                    directions: response,
+	                    routeIndex: i,
+	                    polylineOptions: { strokeColor: color }
+	                });
+	            }			
+	          }
+	        });
+
+                if( index == 0 ){
+                    var latLng = new google.maps.LatLng(element.start_location.lat(), element.start_location.lng());
+                    map.setCenter(latLng);  
+                }
+
+	} else{
+
+
+	        var requestdTres = {
+	           destination: element.end_location.lat()+','+element.end_location.lng(),
+	            origin: element.start_location.lat()+','+element.start_location.lng(),
+	            travelMode: 'TRANSIT',
+	            provideRouteAlternatives: false,
+	        };
+
+                directionsService.route(requestdTres, function(response, status) {
+                    if (status == 'OK') {
+                        for (var i = 0, len = response.routes.length; i < len; i++) {
+
+                            new google.maps.DirectionsRenderer({
+                                 map: map,
+                                 directions: response,
+                                 routeIndex: i,
+                                 polylineOptions: { strokeColor: '#000000' }
+                             });
+
+
+                        }			
+                    }
+	        });
+
+
+	}
+
+}   
+
+
+        
+      function initMap() {
+
+
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: 'PraÃ§a Sete de Setembro, s/n - Centro, Belo Horizonte - MG',
+          scrollwheel: true,
+          zoom: 1
+        });
+
+        directionsDisplay = new google.maps.DirectionsRenderer({
+          map: map
+        });
+
+        directionsService = new google.maps.DirectionsService();
+
+        
+        panorama = map.getStreetView();
+        
+        /*panorama = new google.maps.StreetViewPanorama(
+            document.getElementById('pano'), {
+              position: {lat: 40.729884, lng: -73.990988},
+              pov: {
+                heading: 270,
+                pitch: 0
+              },
+              visible: true
+        });  */
+
+	
+		
+		
+		
+		
+		
+      }
+
+    </script>
+    
+
+    
+    
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBcO10hDOCRqMnBXFR2D3v17O9HegTxSbg&callback=initMap"
+        async defer></script>				
+				
+
+
+
+
+
+
+</body>
+
+
+</div>
+  
+
+
+
+
+
+    <script src="js/index.js"></script>
+
+</body>
+</html>
+
+
